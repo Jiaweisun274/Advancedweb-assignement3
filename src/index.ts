@@ -1,23 +1,29 @@
-import { Router, Request, Response } from "express";
+import express, { Request, Response } from "express";
+import path from "path";
 
-const router: Router = Router();
+const app = express();
+const PORT = 3000;
 
 type TUser = { name: string; email: string };
 const users: TUser[] = [];
 
+// Middleware
+app.use(express.json()); // Parse JSON in request bodies
+app.use(express.static(path.join(__dirname, "../public"))); // Serve static files
+
 // Task 1: Hello World Route
-router.get("/hello", (req: Request, res: Response) => {
+app.get("/hello", (req: Request, res: Response) => {
   res.json({ msg: "Hello world!" });
 });
 
 // Task 2: ID Echoing Route
-router.get("/echo/:id", (req: Request, res: Response) => {
+app.get("/echo/:id", (req: Request, res: Response) => {
   const id = req.params.id;
   res.json({ id });
 });
 
 // Task 3: POST Sum Route
-router.post("/sum", (req: Request, res: Response) => {
+app.post("/sum", (req: Request, res: Response) => {
   const numbers: number[] = req.body.numbers;
 
   // Calculate the sum
@@ -26,7 +32,7 @@ router.post("/sum", (req: Request, res: Response) => {
 });
 
 // Task 4: Add User Route
-router.post("/users", (req: Request, res: Response) => {
+app.post("/users", (req: Request, res: Response) => {
   const user: TUser = req.body;
 
   // Add the user to the list
@@ -35,8 +41,11 @@ router.post("/users", (req: Request, res: Response) => {
 });
 
 // Task 5: Get Users Route
-router.get("/users", (req: Request, res: Response) => {
+app.get("/users", (req: Request, res: Response) => {
   res.status(201).json(users);
 });
 
-export default router;
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
